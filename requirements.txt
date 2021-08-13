@@ -10,3 +10,4 @@ Pympler==0.8
 sqlparse==0.3.1
 mysqlclient==1.4.6
 httpx==0.14.3
+requests==2.24.0
