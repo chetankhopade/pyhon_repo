@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load extras %}
+{% load static %}
+{% load humanize %}
+
+{% block content_header_center %}
+    <form class="w-100 d-flex justify-content-center">
+        <input type="hidden" name="overwrite_query" value="1">
+        <span class="font-14 _600 text-center mr-1">Viewing:</span>
+        <input type="text" id="inputDashboardFilterStartDate" value="{{ start_date|date:'m/d/Y' }}" placeholder="start date" class="form-control width-100px datepicker"/>
+        <p class="font-20 _600 text-center p-0 mx-1">-</p>
+        <input type="text" id="inputDashboardFilterEndDate"  value="{{ end_date|date:'m/d/Y' }}" placeholder="end date" class="form-control width-100px datepicker mr-1"/>
+        <a onclick="DASHBOARD.apply_dates_filter()" class="btn btn-success width-100px form-control text-white font-weight-bold p-1 m-0">Filter</a>
+    </form>
+{% endblock %}
+
+{% block content_header_right %}
+    <div class="col-sm-9" style="float: right">
+        <select onchange="DASHBOARD.apply_data_range_filter($(this));" class="form-control myselect2" id="date_range_filter">
+            <option {% if query_filter == 'Custom' %}selected {% endif %} {% if query_filter != 'Custom' %}disabled{% endif %} value="" style="background-color: #dedede">Custom</option>
+            {% for range in data_ranges %}
+                <option value="{{ range.0 }}" {% if query_filter == range.0 %}selected{% endif %}>{{ range.0 }} - {{ range.1 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+{% endblock %}
+
+{% block content_body %}
+
+    <!-- first row -->
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card card_height">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="font-15 _600 ml-2"><span class="query_filter_name">({{ query_filter }})</span> Half Gauge</div>
+                            <div class="py-3 text-center text-lg text-success" id="divCounterWacSales"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card card_height">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="font-15 _600 ml-2"><span class="query_filter_name">({{ query_filter }})</span> Half Gauge</div>
+                            <div class="py-3 text-center text-lg text-success"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card card_height">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="font-15 _600 ml-2"><span class="query_filter_name">({{ query_filter }})</span> Half Gauge</div>
+                            <div class="py-3 text-center text-lg text-primary">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Second row -->
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="font-17 _600 ml-1">Full Transactions</h5>
+                             <table id="graphGridTable" class="table table-hover table-borderless table-condensed w-100">
+                                <thead class="bg-light">
+                                <tr class="font-11 text-dark">
+                                    <th style="display: none">Id</th>
+                                    <th>Date Received</th>
+                                    <th>Time Received</th>
+                                    <th>Doc Type</th>
+                                    <th>Inbound X12</th>
+                                    <th>997 Out</th>
+                                    <th>Inbound Result</th>
+                                    <th>Outbound Response</th>
+                                    <th>Outbound X12</th>
+                                    <th>Ack ID</th>
+                                </tr>
+                                </thead>
+                                <tbody class="font-10"></tbody>
+                            </table>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- fith section -->
+
+{#    {% include 'dashboard/includes/modals.html' %}#}
+{% endblock %}
+
+{% block scripts %}
+{#    <script src="{% static 'js/libs/Chart.min.js' %}"></script>#}
+  <script src="{% static 'js/app/dashboard.js' %}"></script>
+{% endblock %}

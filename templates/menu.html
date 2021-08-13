@@ -1,0 +1,47 @@
+{% load static %}
+
+<div id="aside" class="app-aside fade box-shadow-x nav-expand white" aria-hidden="true" >
+    <div class="sidenav modal-dialog dk white empower_background_purple">
+        <!-- sidenav top -->
+        <div class="navbar empower_background_purple">
+            <!-- brand -->
+            <a href="{% url 'index' %}" class="navbar-brand">
+                <img src="{% static 'images/empower_logo_sm.png' %}" alt=".">
+            </a>
+            <!-- / brand -->
+        </div>
+
+        <!-- Flex nav content -->
+        <div class="flex hide-scroll">
+            <div class="scroll">
+                <div class="nav-stacked">
+                    <ul id="mainMenu" class="nav">
+
+
+
+                                <div class="m-3" style="color: #FFCE07; font-size: 12px">
+                                    <a class="btnCollapse" mid="edi_1" role="button" >
+                                       EDI
+                                        <i class="fa fa-caret-down ml-2"></i>
+                                    </a>
+                                </div>
+                                <div class="collapse" id="divCollapse_1">
+
+                                        <li class="menu_options">
+
+                                                <a class="menu_options_link" href="{% url 'dashboard' %}">
+                                                <span class="nav-icon">
+                                                    <i></i>
+                                                </span>s
+                                                <span class="nav-text">Dashboard</span>
+                                            </a>
+
+                                        </li>
+
+                                </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

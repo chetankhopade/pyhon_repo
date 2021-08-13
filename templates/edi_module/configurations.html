@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+{% load extras %}
+{% load static %}
+{% load humanize %}
+
+{% block content_body %}
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3" style="left: 0">
+                            <h5 class="font-17 _600 ml-1">Configurations</h5>
+                        </div>
+                        <div class="col-9" style="right: 0">
+                            <button class="btn btn-sm btn-primary" id="add_new_config" onclick="Configurations.show_add_modal()">Add New</button>
+                        </div>
+                    </div>
+
+                     <table id="ediConfigurations" class="table table-hover table-borderless table-condensed w-100">
+                        <thead class="bg-light">
+                            <tr class="text-dark">
+                                <th>Company</th>
+                                <th>Partner</th>
+                                <th>Documents</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Start/Live</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyEdiConfigurations"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Configuration -->
+    <div id="addConfiguration" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered modal-lg animate">
+            <div class="modal-content">
+                <div class="modal-header empower_background_yellow height-30">
+                    <h5 class="modal-title">Add New Configuration</h5>
+                </div>
+                <div class="modal-body text-center p-lg" style="overflow-y: scroll;max-height: 65vh;overflow-x: hidden;">
+                    <form class="p-x-xs" id="fmAddConfiguration" autocomplete="off">
+                        <div class="form-group row required">
+                            <label for="id_customer" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Customer
+                            </label>
+                            <div class="col-9" style="text-align: left;">
+                                <select id="id_customer" name="id_customer" class="form-control myselect2" tabindex="-1" aria-hidden="true" onchange="Configurations.populate_customer_details($(this))">
+                                    <option value="" edi_id="" edi_type="">---</option>
+                                    {% if customers %}
+                                        {% for customer in customers  %}
+                                            <option value="{{ customer.id }}" edi_id="{{ customer.edi_id|default_if_none:'' }}" edi_type="{{ customer.edi_type|default_if_none:'' }}">{{ customer.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_customer_isa" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Customer isa
+                            </label>
+                            <div class="col-9">
+                                <input id="id_customer_isa" name="id_customer_isa" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_customer_isa_descriptor" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Customer isa descriptor
+                            </label>
+                            <div class="col-9">
+                                <input id="id_customer_isa_descriptor" name="id_customer_isa_descriptor" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_partner" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Partner
+                            </label>
+                            <div class="col-9" style="text-align: left;">
+                                <select id="id_partner" name="id_partner" class="form-control myselect2" tabindex="-1" aria-hidden="true" onchange="Configurations.populate_partner_details($(this))">
+                                    <option value="" partner_isa="" partner_isa_descriptor="" partner_isa_test="">---</option>
+                                    {% if partners %}
+                                        {% for partner in partners  %}
+                                            <option value="{{ partner.id }}" partner_isa="{{ partner.isa_id|default_if_none:'' }}" partner_isa_descriptor="{{ partner.isa_type|default_if_none:'' }}" partner_isa_test="{{ partner.isa_test_id|default_if_none:'' }}">{{ partner.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_partner_acctno" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Partner acctno
+                            </label>
+                            <div class="col-9">
+                                <input id="id_partner_acctno" name="id_partner_acctno" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_partner_isa" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Partner isa
+                            </label>
+                            <div class="col-9">
+                                <input id="id_partner_isa" name="id_partner_isa" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_partner_isa_descriptor" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Partner isa descriptor
+                            </label>
+                            <div class="col-9">
+                                <input id="id_partner_isa_descriptor" name="id_partner_isa_descriptor" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_partner_isa_test" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Partner isa test
+                            </label>
+                            <div class="col-9">
+                                <input id="id_partner_isa_test" name="id_partner_isa_test" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_partner_gs_descriptor" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Partner gs descriptor
+                            </label>
+                            <div class="col-9">
+                                <input id="id_partner_gs_descriptor" name="id_partner_gs_descriptor" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_main_path" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Main Path
+                            </label>
+                            <div class="col-9">
+                                <input id="id_main_path" name="id_main_path" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_document_types" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Document Types
+                            </label>
+                            <div class="col-9">
+                                <input id="id_document_types" name="id_document_types" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_token" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Token
+                            </label>
+                            <div class="col-9">
+                                <input id="id_token" name="id_token" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_separator" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Separator
+                            </label>
+                            <div class="col-9">
+                                <input id="id_separator" name="id_separator" class="form-control height-30" value="*">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_terminator" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Terminator
+                            </label>
+                            <div class="col-9">
+                                <input id="id_terminator" name="id_terminator" class="form-control height-30" value="~">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2" style="text-align: left; margin-top: 10px">
+                            <label for="id_use_state" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Use State
+                            </label>
+                            <div class="col-9">
+                                <label class="switch">
+                                    <input id="id_use_state" type="checkbox" checked/>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_sftp" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Sftp
+                            </label>
+                            <div class="col-9">
+                                <textarea cols="20" rows="6"  id="id_sftp" name="id_sftp" class="form-control">{"test": {"host": "", "pull_path": "", "drop_path": "", "interval": "", "user": "", "password": "", "ssh_key": "", "sftp_run_state": ""}, "prod": {"host": "", "pull_path": "", "drop_path": "", "interval": "", "user": "", "password": "", "ssh_key": "", "sftp_run_state": ""}}
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2" style="text-align: left; margin-top: 10px">
+                            <label for="id_is_enabled" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Is Enabled
+                            </label>
+                            <div class="col-9">
+                                <label class="switch">
+                                    <input id="id_is_enabled" type="checkbox" checked/>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2" style="text-align: left; margin-top: 10px">
+                            <label for="id_single_997_st" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Single 997 st
+                            </label>
+                            <div class="col-9">
+                                <label class="switch">
+                                    <input id="id_single_997_st" type="checkbox" checked/>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2" style="text-align: left; margin-top: 10px">
+                            <label for="id_break_apart_844_files" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Break Apart 844 Files
+                            </label>
+                            <div class="col-9">
+                                <label class="switch">
+                                    <input id="id_break_apart_844_files" type="checkbox" checked/>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_outbound_folder" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Outbound Folder
+                            </label>
+                            <div class="col-9">
+                                <input id="id_outbound_folder" name="id_outbound_folder" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2" style="text-align: left; margin-top: 10px">
+                            <label for="id_move_only" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Move Only
+                            </label>
+                            <div class="col-9">
+                                <label class="switch">
+                                    <input id="id_move_only" type="checkbox" checked/>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_error_recipients" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Error Recipients
+                            </label>
+                            <div class="col-9">
+                                <textarea cols="20" rows="10"  id="id_error_recipients" name="id_error_recipients" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_terms_type_code_id" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Terms Type Code Id
+                            </label>
+                            <div class="col-9">
+                                <input id="id_terms_type_code_id" name="id_terms_type_code_id" class="form-control height-30" value="01">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_terms_discount_percent_r16" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Terms discount percent r16
+                            </label>
+                            <div class="col-9">
+                                <input id="id_terms_discount_percent_r16" name="id_terms_discount_percent_r16" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_terms_discount_days_due" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Terms discount days due
+                            </label>
+                            <div class="col-9">
+                                <input id="id_terms_discount_days_due" name="id_terms_discount_days_due" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_terms_net_days" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Terms net days
+                            </label>
+                            <div class="col-9">
+                                <input id="id_terms_net_days" name="id_terms_net_days" class="form-control height-30">
+                            </div>
+                        </div>
+                        <div class="form-group row required mt-2">
+                            <label for="id_parameters" class="col-3 col-form-label font-10 font-weight-bold control-label">
+                                Parameters
+                            </label>
+                            <div class="col-9">
+                                <textarea cols="20" rows="6"  id="id_parameters" name="id_parameters" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a id="btnConfigSave" class="btn btn-warning" onclick="Configurations.submit();">Save</a>
+                    <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration Details -->
+    <div id="configurationDetails" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered modal-lg animate">
+            <div class="modal-content">
+                <div class="modal-header empower_background_yellow height-30">
+                    <h5 class="modal-title">Configuration Details</h5>
+                </div>
+                <div class="modal-body text-center p-lg" style="overflow-y: scroll;max-height: 65vh;overflow-x: hidden;">
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" data-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/app/configurations.js' %}"></script>
+{% endblock %}
