@@ -1,0 +1,34 @@
+.idea/
+.idea/*
+.vscode/
+
+.coverage
+htmlcov/
+
+**/__pycache__/
+
+/administration/settings.py
+
+
+media/
+media/*
+
+static/admin/
+static/rest_framework/
+static/rest_framework_docs/
+
+*.swp
+
+# MacOS
+*.DS_Store
+
+#Andres ENV
+Dockerfile
+docker-compose*
+db/
+Pipfile*
+Client/*
+
+empowerb/venv
+venv
+venv/*
