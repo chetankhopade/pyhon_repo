@@ -1,12 +1,18 @@
+import os
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 import calendar
+
+from django.utils.encoding import smart_str
+from django.views.decorators.csrf import csrf_exempt
+
 from app.management.utilities.functions import (query_range, convert_string_to_date, bad_json, ok_json)
 from app.management.utilities.globals import addGlobalData
-from administration.settings import BASE_API_URL, EDI_API_TOKEN
+from administration.settings import BASE_API_URL, EDI_API_TOKEN, CLIENTS_DIRECTORY
 import time
 import requests
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework import status
 @login_required(redirect_field_name='ret', login_url='/login')
 def views(request):
@@ -70,3 +76,22 @@ def get_full_transactions_edi_api(request, *args, **kwargs):
     except Exception as ex:
         print(ex.__str__())
         return bad_json(message='ConnectionError: API is not working')
+
+@login_required(redirect_field_name='ret', login_url='/login')
+@csrf_exempt
+def file_view(request):
+
+    dirname = request.POST.get('dirname')
+    filename = request.POST.get('file_name')
+    company_id = request.POST.get('company_id')
+    terminator = '~'
+    if dirname and filename and company_id:
+        file_path = os.path.join(CLIENTS_DIRECTORY,company_id, dirname, filename)
+        with open(file_path, 'r') as f:
+            file_content = f.read().split(terminator)
+        # remove empty elem in the splitted list
+        file_content = list(filter(None, file_content))
+        file_content = "\n".join(file_content)
+        return HttpResponse(file_content, content_type="text/plain")
+    else:
+        return HttpResponse("NO", content_type="text/plain")

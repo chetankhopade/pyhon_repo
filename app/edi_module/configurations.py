@@ -5,6 +5,7 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 
+from app.management.utilities.constants import CONFIG_STATUSES
 from app.management.utilities.functions import (query_range, convert_string_to_date, bad_json, ok_json)
 from app.management.utilities.globals import addGlobalData
 from administration.settings import BASE_API_URL, EDI_API_TOKEN
@@ -33,6 +34,8 @@ def view(request):
     if partner_response.status_code == status.HTTP_200_OK:
         data["partners"] = partner_response.json()["partners"]
 
+    data["config_statuses"] = CONFIG_STATUSES
+
     data['header_title'] = f"EDI > Configurations"
     data['menu_option'] = 'menu_edi_configurations'
 
@@ -40,6 +43,7 @@ def view(request):
 
 
 @login_required(redirect_field_name='ret', login_url='/login')
+@csrf_exempt
 def get_all_configurations(request):
     try:
         search_params = request.POST.get('search_params', request.GET.get('search_params'))
@@ -119,9 +123,11 @@ def get_by_id(request):
 def update_status(request):
     config_id = request.POST["config_id"]
     action = request.POST.get('action', '')
+    configuration_status = request.POST.get('configuration_status', '')
     payload = {
         'id': config_id,
-        'action': action
+        'action': action,
+        'configuration_status': configuration_status
     }
     r = requests.post(f"{BASE_API_URL}/update_configuration_status/", json=payload)
     if r.status_code == 200:

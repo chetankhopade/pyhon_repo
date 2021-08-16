@@ -1,4 +1,4 @@
-#import debug_toolbar
+import debug_toolbar
 from django.conf.urls.static import static
 from django.urls import path, include
 from django.contrib import admin
@@ -51,6 +51,7 @@ urlpatterns += [
         path(f'edi/configurations/create', configurations.create, name=f'edi_configurations_create'),
         path(f'edi/configurations/get_by_id', configurations.get_by_id, name=f'edi_configurations_get_by_id'),
         path(f'edi/configurations/update_status', configurations.update_status, name=f'edi_configurations_update_status'),
+        path(f'dashboard/view', dashboard.file_view, name=f'file_view'),
 
     ]
 
@@ -59,7 +60,7 @@ if DEBUG:
     urlpatterns += [
         path('404', common_views.error_404_view, name='404_page'),
         path('500', common_views.error_500_view, name='500_page'),
-        # path("__debug__/", include(debug_toolbar.urls))
+        path("__debug__/", include(debug_toolbar.urls))
     ]
 
 # Static and Media

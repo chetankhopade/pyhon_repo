@@ -492,3 +492,28 @@ DATE_FORMAT_LIST = {
 }
 
 CONTRACT_THRESHOLD_VALUE = [30,60,90]
+
+# These Config statuses should be same as defined in api constants
+
+# Config Statuses
+CONFIG_STATUS_PENDING = 'Pending'
+CONFIG_STATUS_AS2_READY = 'AS2 Ready'
+CONFIG_STATUS_CONFIG_COMPLETE = 'Config Complete'
+CONFIG_STATUS_AS2_TESTED = 'AS2 Tested'
+CONFIG_STATUS_SCRIPTS_COMPLETE = 'Scripts Complete'
+CONFIG_STATUS_MANUAL_CHECK = 'Manual Check'
+CONFIG_STATUS_AUTOMATION_ON = 'Automation On'
+CONFIG_STATUS_COMPLETE = 'Complete'
+CONFIG_STATUS_STOPPED = 'Stopped'
+
+CONFIG_STATUSES = (
+    (CONFIG_STATUS_PENDING, 'Pending'),
+    (CONFIG_STATUS_AS2_READY, 'AS2 Ready'),
+    (CONFIG_STATUS_CONFIG_COMPLETE, 'Config Complete'),
+    (CONFIG_STATUS_AS2_TESTED, 'AS2 Tested'),
+    (CONFIG_STATUS_SCRIPTS_COMPLETE, 'Scripts Complete'),
+    (CONFIG_STATUS_MANUAL_CHECK, 'Manual Check'),
+    (CONFIG_STATUS_AUTOMATION_ON, 'Automation On'),
+    (CONFIG_STATUS_COMPLETE, 'Complete'),
+    (CONFIG_STATUS_STOPPED, 'Stopped'),
+)
