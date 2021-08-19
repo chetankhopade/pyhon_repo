@@ -43,4 +43,4 @@ python manage.py runserver
 # http://localhost:8007/admin/
 
 # EDI API URL to show the dashboard data 
-# http://localhost:8003/api
+# http://localhost:8025/api
